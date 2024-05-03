@@ -6,7 +6,7 @@ const SunDistanceCalculator = () => {
     const [sunDistance, setSunDistance] = useState(null);
 
     useEffect(() => {
-        // Get user's coordinates
+
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 setCoordinates({

@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+
 import './LoginPage.css';
 import { GoogleLogin } from '@react-oauth/google';
 import { getUserByEmailAndPassword } from './userData';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
 
   const performLoginLogic = (e) => {
     e.preventDefault();
@@ -25,15 +29,14 @@ const LoginPage = () => {
     // Check if user is valid or not
     const user = getUserByEmailAndPassword(email, password);
     if (user) {
-      // successful login (CASE 3)
-      alert("Successfully logged in");
+      navigate('/sea');
     } else { // CASE (2.2)
       alert("Invalid email or password");
     }
   }
 
   const responseMessage = (response) => { // CASE 4
-    alert("Successfully logged in using Google Auth");
+    navigate('/nearest-sea');
   };
 
   const errorMessage = (error) => { // CASE 5
@@ -58,9 +61,9 @@ const LoginPage = () => {
           </div>
         </form>
         <div className="google-login-button">
-          <GoogleLogin 
-            onSuccess={responseMessage} 
-            onError={errorMessage} 
+          <GoogleLogin
+            onSuccess={responseMessage}
+            onError={errorMessage}
           />
         </div>
       </div>

@@ -62,7 +62,7 @@ const NearestSea = () => {
                 })
                 .catch(error => {
                     setLoading(false);
-                    console.error('Error fetching nearest sea:', error);
+                    alert('Error fetching nearest sea:', error);
                 });
         };
 
@@ -72,14 +72,14 @@ const NearestSea = () => {
     }, []);
 
     const goToThirdPage = () => {
-        navigate('/sun');
+        navigate('/distance-to-sun');
     };
 
     if (!currentPosition || loading) {
         return (
-            <div className="full-center">
+            <div className="full-center" style={{ fontWeight: 'bold' }}>
                 <ClipLoader color="#123abc" loading={loading} size={150} />
-                <p>Loading...</p>
+                <p>Finding Nearest Sea to Your Location</p>
             </div>
         );
     }

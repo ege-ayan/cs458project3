@@ -29,7 +29,7 @@ const LoginPage = () => {
     // Check if user is valid or not
     const user = getUserByEmailAndPassword(email, password);
     if (user) {
-      navigate('/sea');
+      navigate('/nearest-sea');
     } else { // CASE (2.2)
       alert("Invalid email or password");
     }

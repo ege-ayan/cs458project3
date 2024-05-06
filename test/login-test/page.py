@@ -19,19 +19,18 @@ class LoginPage(BasePage):
 
     def __init__(self, driver):
         super().__init__(driver)
-        # Initialize email_field when the LoginPage object is created
-        if LoginPage.email_field is None:
-            LoginPage.email_field = self.driver.find_element(By.CSS_SELECTOR, "input[type='email']")
-            LoginPage.password_field = self.driver.find_element(By.CSS_SELECTOR, "input[type='password']")
-            LoginPage.login_button = self.driver.find_element(By.CSS_SELECTOR, "button.login-button")
-
 
     def fill_form(self, email, password, expected_message):
-                
+            
                 # If there is no internet connection, the expected alert should indicate
                 # the internet connection problem before any problem else
                 if self.is_internet_available() == False:
                     expected_message = "No internet connection available."
+                
+                # Assign the imtes in the login page into variables
+                LoginPage.email_field = self.driver.find_element(By.CSS_SELECTOR, "input[type='email']")
+                LoginPage.password_field = self.driver.find_element(By.CSS_SELECTOR, "input[type='password']")
+                LoginPage.login_button = self.driver.find_element(By.CSS_SELECTOR, "button.login-button")
                 
                 email_field = LoginPage.email_field
                 password_field = LoginPage.password_field
@@ -61,7 +60,6 @@ class LoginPage(BasePage):
                     alert.accept()  # To accept the alert
                     # Or alert.dismiss()  # To dismiss the alert
                 except NoAlertPresentException:
-                    print("No alert present")
                     return False
                 if alert_text == expected_message:
                     return True
@@ -69,7 +67,17 @@ class LoginPage(BasePage):
    
     def is_correct_login_successful(self, email, password):
         expected_message = "Successfully logged in"
-        return self.fill_form(email, password, expected_message)
+        self.fill_form(email, password, expected_message)
+
+        # Wait for redirection to occur
+        redirected_url = WebDriverWait(self.driver, 10).until(
+            EC.url_matches("http://localhost:3000/nearest-sea")
+        )
+
+        if redirected_url:
+            return True
+        else:
+            return False
     
 
     def is_invalid_login_successful(self, email, password):
@@ -137,28 +145,23 @@ class LoginPage(BasePage):
         time.sleep(2)
         password_input.send_keys(Keys.ENTER)
         self.driver.switch_to.window(self.driver.window_handles[0])
-        time.sleep(6) # Wait for the alert to be present
-        try:
-            # Switch to the alert
-            alert = Alert(self.driver)
-            # Get the text of the alert
-            alert_text = alert.text
-            # Close the alert (accept or dismiss)
-            alert.accept()  # To accept the alert
-            # Or alert.dismiss()  # To dismiss the alert
-        except NoAlertPresentException:
-            print("No alert present")
-            return False
-        if alert_text == expected_message:
+        time.sleep(6) 
+        # Wait for redirection to occur
+        redirected_url = WebDriverWait(self.driver, 10).until(
+            EC.url_matches("http://localhost:3000/nearest-sea")
+        )
+
+        if redirected_url:
             return True
-        return False
+        else:
+            return False
 
     # Case 1 detect the existence of the internet connection
     def is_internet_available(self):
         try:
             # Attempt to create a socket connection to Google's DNS server
-            socket.create_connection(("8.8.8.8", 53), timeout=3)
-            return True  # Connection succeeded, internet is available
+            with socket.create_connection(("8.8.8.8", 53), timeout=3) as sock:
+                return True  # Connection succeeded, internet is available
         except OSError:
             pass
         return False  # Connection failed, internet is not available

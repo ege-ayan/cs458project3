@@ -16,13 +16,13 @@ class LoginTest(unittest.TestCase):
     def test_all(self):
         
         self.correct_credentials()
+        
         self.invalid_credentials()
         self.empty_credentials()
         
         login_page = page.LoginPage(self.driver)
         self.assertTrue(login_page.invalid_google_login())
         self.assertTrue(login_page.valid_google_login())
-
 
     # Case 3 login with valid credentials
     def correct_credentials(self):
@@ -39,7 +39,9 @@ class LoginTest(unittest.TestCase):
         email, password = credentials_list[i]
         login_page = page.LoginPage(self.driver)
         self.assertTrue(login_page.is_correct_login_successful(email, password))
-    
+        # Navigate back to login page
+        self.driver.get("http://localhost:3000/")
+        
 
     # Case 2.2 login with invalid credentials
     def invalid_credentials(self):
